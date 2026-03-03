@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Interaktive Galerie kiki</title>
+    <style>
+        .gallery-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #currentImage {
+            max-width: 800px;
+            width: 100%;
+            height: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .controls, .navigation {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 60px;
+            text-align: center;
+        }
+        #imageCounter {
+            font-size: 18px;
+            margin: 0 10px;
+        }
+        /* CSS für den Zurück-Button */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interaktive kiki-Bildergalerie</h1>
+
+    <div class="gallery-container">
+        <!-- Das EINE Bild-Element, dessen Quelle wir ändern -->
+        <img id="currentImage" src="kiki/0.jpg" alt="Aktuelles Bild">
+
+        <div class="navigation">
+            <!-- Vorheriger Button -->
+            <button onclick="changeImage(-1)">Vorheriges Bild</button>
+            
+            <!-- Bildzähler / Sucheingabe -->
+            <span id="imageCounter">Bild 
+                <input type="number" id="imageInput" value="0" min="0" max="55" onchange="jumpToImage(this.value)"> 
+                von 55
+            </span>
+            
+            <!-- Nächster Button -->
+            <button onclick="changeImage(1)">Nächstes Bild</button>
+        </div>
+    </div>
+
+    <hr>
+    <a href="Roberta.html" class="back-button">Zurück zur Startseite</a>
+
+    <script>
+        let currentImageIndex = 0;
+        const totalImages = 56; // 0 bis 55 sind 56 Bilder
+        const imageElement = document.getElementById('currentImage');
+        const imageInputElement = document.getElementById('imageInput');
+
+        // Funktion zum Wechseln des Bildes (delta ist entweder +1 oder -1)
+        function changeImage(delta) {
+            currentImageIndex += delta;
+            
+            // Logik, um am Ende der Galerie von vorne zu beginnen oder zu stoppen
+            if (currentImageIndex >= totalImages) {
+                currentImageIndex = 0; // Zurück zum ersten Bild
+            } else if (currentImageIndex < 0) {
+                currentImageIndex = totalImages - 1; // Zum letzten Bild springen
+            }
+            
+            updateImage();
+        }
+
+        // Funktion, um direkt zu einem Bild zu springen (über die Eingabebox)
+        function jumpToImage(index) {
+            const newIndex = parseInt(index, 10);
+            if (!isNaN(newIndex) && newIndex >= 0 && newIndex < totalImages) {
+                currentImageIndex = newIndex;
+                updateImage();
+            } else {
+                // Eingabe zurücksetzen, falls ungültig
+                imageInputElement.value = currentImageIndex;
+            }
+        }
+
+        // Funktion, die das src-Attribut des Bildes aktualisiert
+        function updateImage() {
+            // Die neue Bildquelle zusammensetzen (kiki/0.jpg, kiki/1.jpg, etc.)
+            const newSrc = `kiki/${currentImageIndex}.jpg`;
+            imageElement.src = newSrc;
+            imageElement.alt = `Bild ${currentImageIndex}`;
+            
+            // Auch die Nummer in der Eingabebox aktualisieren
+            imageInputElement.value = currentImageIndex;
+        }
+
+        // Beim Laden der Seite sicherstellen, dass die Zählung korrekt ist
+        document.getElementById('imageCounter').innerHTML = `Bild <input type="number" id="imageInput" value="0" min="0" max="55" onchange="jumpToImage(this.value)"> von 55`;
+    </script>
+
+</body>
+</html>
